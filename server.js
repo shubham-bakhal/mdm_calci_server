@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const fs = require("fs");
+require("dotenv").config();
 
 // create express app
 const app = express();
@@ -55,6 +56,6 @@ app.post("/update", (req, res) => {
 });
 
 // listen for requests
-app.listen(4000, () => {
-  console.log("Server is listening on port ", 4000);
+app.listen(process.env.PORT, () => {
+  console.log("Server is listening on port", process.env.PORT);
 });
