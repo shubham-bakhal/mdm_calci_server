@@ -47,7 +47,7 @@ app.post("/update", (req, res) => {
       break;
     }
   }
-  fs.writeFile("./data.json", JSON.stringify(jsonObj), err => {
+  fs.writeFile("./data.json", JSON.stringify(jsonObj), (err) => {
     console.log("err", err);
   });
   return res.json({
@@ -56,6 +56,6 @@ app.post("/update", (req, res) => {
 });
 
 // listen for requests
-app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT || 4000, () => {
   console.log("Server is listening on port", process.env.PORT);
 });
