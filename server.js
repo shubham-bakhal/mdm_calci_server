@@ -49,7 +49,7 @@ app.post("/update", async (req, res) => {
     { new: true }
   );
   const data = await Data.find();
-  return res.status(200).json({
+  return res.status(201).json({
     data,
   });
 });
@@ -58,7 +58,7 @@ app.post("/add", async (req, res) => {
   const { name, one, two } = req.body;
   const newData = await Data.create({ name, one, two });
 
-  return res.json({
+  return res.status(201).json({
     data: newData,
   });
 });
