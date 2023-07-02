@@ -1,12 +1,17 @@
+const dotenv = require("dotenv");
+dotenv.config();
+//
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const fs = require("fs");
-require("dotenv").config();
+const Data = require("./data.model");
+require("./mongodb");
 
 // create express app
 const app = express();
 
+console.log("port", process.env.MONGO_URL);
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -28,30 +33,33 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/json", (req, res) => {
-  const data = fs.readFileSync("./data.json");
-  const jsonObj = JSON.parse(data);
-  return res.json({
-    data: jsonObj,
+app.get("/json", async (req, res) => {
+  const data = await Data.find();
+  console.log(data);
+  return res.status(200).json({
+    data,
   });
 });
 
-app.post("/update", (req, res) => {
+app.post("/update", async (req, res) => {
   const { id, one, two } = req.body;
-  const data = fs.readFileSync("./data.json");
-  const jsonObj = JSON.parse(data);
-  for (let item of jsonObj) {
-    if (item.id === id) {
-      item.one = one;
-      item.two = two;
-      break;
-    }
-  }
-  fs.writeFile("./data.json", JSON.stringify(jsonObj), (err) => {
-    console.log("err", err);
+  const updatedData = await Data.findByIdAndUpdate(
+    id,
+    { one, two },
+    { new: true }
+  );
+  const data = await Data.find();
+  return res.status(200).json({
+    data,
   });
+});
+
+app.post("/add", async (req, res) => {
+  const { name, one, two } = req.body;
+  const newData = await Data.create({ name, one, two });
+
   return res.json({
-    data: jsonObj,
+    data: newData,
   });
 });
 
